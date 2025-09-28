@@ -4,58 +4,66 @@
   <meta charset="UTF-8">
   <title>CPUT Marketplace Chat</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="script.js" defer></script>
 </head>
 <body>
   <div class="app-container">
     <header>
       <div class="logo">
         <img src="images/cput-logo.jpg" alt="CPUT Logo" class="cput-logo"/>
-    CPUT Marketplace and Exchange
-  </div>
-      <div class="icons">
-        <img src="images/chat-icon.png" alt="Chat" class="product-icon" />
-        <img src="images/bell-icon.png" alt="Notifications" class="product-icon" />
-        <img src="images/user icon.png" alt="User" class="product-icon" />
+        CPUT Marketplace and Exchange
       </div>
     </header>
     <div class="main">
       <aside class="chat-list">
         <h2>Chats</h2>
         <ul>
-          <li><strong>Nobahle Nzimande</strong><br><small>Yes, that works for me.</small></li>
-          <li>Namhla Brown<br><small>How about 11:30 during break time?</small></li>
-          <li>Robert Wilson<br><small>Thank you for the support.</small></li>
-          <li>James Smith<br><small>Great, thank you!</small></li>
-          <li>Aliyana Dalasile<br><small>I’ll check and let you know</small></li>
+          <li onclick="showChat('Nobahle Nzimande')" data-user="Nobahle Nzimande">
+            <div class="chat-user-row">
+              <img src="images/user icon.png" alt="User" class="chat-user-icon" />
+              <strong>Nobahle Nzimande</strong>
+            </div>
+          </li>
+          <li onclick="showChat('Namhla Brown')" data-user="Namhla Brown">
+            <div class="chat-user-row">
+              <img src="images/user icon.png" alt="User" class="chat-user-icon" />
+              <strong>Namhla Brown</strong>
+            </div>
+          </li>
+          <li onclick="showChat('Robert Wilson')" data-user="Robert Wilson">
+            <div class="chat-user-row">
+              <img src="images/user icon.png" alt="User" class="chat-user-icon" />
+              <strong>Robert Wilson</strong>
+            </div>
+          </li>
+          <li onclick="showChat('James Smith')" data-user="James Smith">
+            <div class="chat-user-row">
+              <img src="images/user icon.png" alt="User" class="chat-user-icon" />
+              <strong>James Smith</strong>
+            </div>
+          </li>
+          <li onclick="showChat('Aliyana Dalasile')" data-user="Aliyana Dalasile">
+            <div class="chat-user-row">
+              <img src="images/user icon.png" alt="User" class="chat-user-icon" />
+              <strong>Aliyana Dalasile</strong>
+            </div>
+          </li>
         </ul>
       </aside>
       <section class="chat-window">
         <div class="chat-header">
           <div>
-            <strong>Nobahle Nzimande</strong><br>
-            <small>Laptop</small>
+            <strong id="chat-header-username">Select a user</strong>
           </div>
-          <img src="images/laptop-icon.png" alt="Laptop" class="product-icon"/>
         </div>
-        <div class="chat-messages" id="chat-messages">
-          <div class="message sent">Is the laptop still available?</div>
-          <div class="message received">Yes, it is available.</div>
-          <div class="message sent">Are you available to meet tomorrow?</div>
-          <div class="message received">Yes, that works for me.</div>
-        </div>
+        <div class="chat-messages" id="chat-messages"></div>
         <div class="chat-input">
           <input type="text" id="message-input" placeholder="Type a message...">
           <button onclick="sendMessage()">Send</button>
         </div>
       </section>
     </div>
-    <footer>
-      <span class="footer-copyright">
-    &copy; CPUT Marketplace. All rights reserved
-  </span>
-    </footer>
-
   </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
