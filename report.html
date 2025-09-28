@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CPUT Report Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #ffffff;
+    }
+
+    header {
+      background-color: #4da6ff;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      margin: 0;
+    }
+
+    .logo img {
+      height: 50px;width: auto;
+      margin: 0;
+      padding: 0;
+      display: block;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-left: nowrap;
+    }
+
+    .icons {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .icons span {
+      font-size: 20px;
+      background-color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      cursor: default;
+      user-select: none;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      padding: 40px 60px;
+    }
+
+    .left {
+      width: 40%;
+    }
+
+    .left h2 {
+      font-size: 24px;
+      color: #4a4a4a;
+      margin-bottom: 20px;
+    }
+
+    .left img {
+      width: 90%;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    .left p {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .left a {
+      color: #0077cc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .right {
+      width: 55%;
+    }
+
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .form-row input {
+      width: 48%;
+      padding: 10px;
+      border: none;
+      border-radius: 20px;
+      background-color: #d4e9ff;
+      box-shadow: 2px 2px 4px #ccc;
+      font-size: 16px;
+    }
+
+    .form-row-full {
+      margin-bottom: 15px;
+    }
+
+    .form-row-full input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 20px;
+      background-color: #d4e9ff;
+      box-shadow: 2px 2px 4px #ccc;
+      font-size: 16px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 20px;
+      background-color: #f5f5f5;
+      box-shadow: 2px 2px 5px #ccc;
+      resize: none;
+      height: 120px;
+      margin-bottom: 5px;
+      font-size: 16px;
+      font-family: Arial, sans-serif;
+    }
+
+    .char-count {
+      text-align: right;
+      font-size: 12px;
+      color: gray;
+      margin-bottom: 15px;
+      user-select: none;
+    }
+
+    .submit-btn {
+      padding: 10px 30px;
+      background-color: #4da6ff;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-right: 10px;
+      font-size: 16px;
+    }
+
+    .thank-you {
+      color: green;
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    footer {
+      background-color: #4da6ff;
+      text-align: center;
+      padding: 10px;
+      color: white;
+      font-size: 12px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .back-arrow {
+      font-size: 28px;
+      padding: 10px 20px;
+      display: inline-block;
+      cursor: pointer;
+      user-select: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">
+      <img src="cput_logo.jpg" alt="CPUT Logo" />
+      <span class="title">CPUT Marketplace and Exchange</span>
+    </div>
+    <div class="icons">
+      <span>👤</span>
+      <span>🔔</span>
+      <span>📦</span>
+    </div>
+  </header>
+
+  <div class="back-arrow">&#8592;</div>
+
+  <div class="container">
+    <div class="left">
+      <h2>Report</h2>
+      <img src="Laptop.JPG" alt="Laptop" />
+      <p>If you have any queries please<br />email:</p>
+      <p><a href="mailto:customerSupport@cput.ac.za">customerSupport@cput.ac.za</a></p>
+    </div>
+
+    <div class="right">
+      <div class="thank-you">Thank you for your submission!</div>
+
+      <div class="form-row">
+        <input type="text" placeholder="First Name" id="firstName" />
+        <input type="text" placeholder="Last Name" id="lastName" />
+      </div>
+      <div class="form-row">
+        <input type="text" placeholder="Report Date" id="reportDate" />
+        <input type="text" placeholder="Subject" id="subject" />
+      </div>
+      <label for="message"><strong>Message</strong></label>
+      <textarea placeholder="Please enter what the issue was" id="message" maxlength="300"></textarea>
+      <div class="char-count" id="charCount">0 / 300</div>
+
+      <div>
+        <button class="submit-btn" type="button" id="submitBtn">SUBMIT</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>© CPUT Marketplace. All rights reserved</footer>
+
+  <script>
+    const firstNameInput = document.getElementById("firstName");
+    const lastNameInput = document.getElementById("lastName");
+    const reportDateInput = document.getElementById("reportDate");
+    const subjectInput = document.getElementById("subject");
+    const messageTextarea = document.getElementById("message");
+    const submitButton = document.getElementById("submitBtn");
+    const thankYouMessage = document.querySelector(".thank-you");
+    const charCount = document.getElementById("charCount");
+
+    // Live character count
+    messageTextarea.addEventListener("input", () => {
+      charCount.textContent = `${messageTextarea.value.length} / 300`;
+    });
+
+    submitButton.addEventListener("click", () => {
+      const firstName = firstNameInput.value.trim();
+      const lastName = lastNameInput.value.trim();
+      const reportDate = reportDateInput.value.trim();
+      const subject = subjectInput.value.trim();
+      const message = messageTextarea.value.trim();
+
+      if (!firstName || !lastName || !reportDate || !subject || !message) {
+        alert("❗ Please fill in all fields.");
+        thankYouMessage.style.display = "none";
+        return;
+      }
+
+      // Show thank you message
+      thankYouMessage.style.display = "block";
+
+      // Disable submit button
+      submitButton.disabled = true;
+
+      // Reset form after 4 seconds
+      setTimeout(() => {
+        firstNameInput.value = "";
+        lastNameInput.value = "";
+        reportDateInput.value = "";
+        subjectInput.value = "";
+        messageTextarea.value = "";
+        charCount.textContent = "0 / 300";
+        thankYouMessage.style.display = "none";
+        submitButton.disabled = false;
+      }, 4000);
+    });
+  </script>
+</body>
+</html>
