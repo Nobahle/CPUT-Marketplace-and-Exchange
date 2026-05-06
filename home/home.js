@@ -132,18 +132,29 @@ globalThis.addEventListener('DOMContentLoaded', async () => {
             const product = await res.json();
             
             modalBody.innerHTML = `
-                <img src="${product.image}" alt="${product.name}" class="modal-product-image">
-                <h2 class="modal-product-title">${product.name}</h2>
-                <div class="modal-product-price">R${product.price}</div>
-                <div class="modal-product-category">${product.category_name || 'Uncategorized'}</div>
-                <div class="modal-product-seller">Seller: ${product.seller_username}</div>
-                <div class="modal-actions">
-                    <button class="modal-btn modal-btn-primary" onclick="messageseller(${product.seller_id})">
-                        Message Seller
-                    </button>
-                    <button class="modal-btn modal-btn-secondary" onclick="closeModal()">
-                        Close
-                    </button>
+                <div class="modal-product-details">
+                    <div class="modal-image-wrapper">
+                        <img src="${product.image}" alt="${product.name}" class="modal-product-image">
+                    </div>
+                    <div class="modal-info-wrapper">
+                        <h2 class="modal-product-title">${product.name}</h2>
+                        <div class="modal-product-price">R${product.price}</div>
+                        <div class="modal-product-category"><span>Category:</span> ${product.category_name || 'Uncategorized'}</div>
+                        <div class="modal-product-seller"><span>Seller:</span> ${product.seller_username}</div>
+                        <div class="modal-product-description">
+                            <h3>Description</h3>
+                            <p>${product.description || 'No description provided.'}</p>
+                        </div>
+                        <div class="modal-actions">
+                            <button class="modal-btn modal-btn-primary" onclick="messageseller('${product.seller_id}')">
+                                <img src="../img/messenger_2111573.png" alt="" style="width:20px; vertical-align:middle; margin-right:8px; filter:brightness(0) invert(1);">
+                                Chat with Seller
+                            </button>
+                            <button class="modal-btn modal-btn-secondary" onclick="closeModal()">
+                                Close
+                            </button>
+                        </div>
+                    </div>
                 </div>
             `;
             

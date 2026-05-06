@@ -1,25 +1,58 @@
 import pool from './db.js';
 
+const db = pool.firestore;
+
 export async function createMessage({ fromUserId, toUserId, content }) {
-  // Insert message with timestamp
-  const [result] = await pool.query(
-    'INSERT INTO messages (from_user_id, to_user_id, content, created_at) VALUES (?, ?, ?, NOW())',
-    [fromUserId, toUserId, content]
-  );
-  return result.insertId;
+  const messageRef = await db.collection('messages').add({
+    from_user_id: fromUserId,
+    to_user_id: toUserId,
+    content,
+    created_at: new Date()
+  });
+  return messageRef.id;
 }
 
 export async function getMessagesBetweenUsers(userA, userB) {
-  // Include sender and recipient usernames and timestamp
-  const [rows] = await pool.query(
-    `SELECT m.id, m.from_user_id, m.to_user_id, m.content, m.created_at,
-            fu.username AS from_username, tu.username AS to_username
-     FROM messages m
-     JOIN users fu ON m.from_user_id = fu.id
-     JOIN users tu ON m.to_user_id = tu.id
-     WHERE (m.from_user_id = ? AND m.to_user_id = ?) OR (m.from_user_id = ? AND m.to_user_id = ?)
-     ORDER BY m.id ASC`,
-    [userA, userB, userB, userA]
-  );
-  return rows;
+  // Firestore doesn't support complex OR queries across fields easily with orderBy.
+  // We'll fetch messages where either is from/to and filter/sort in memory.
+  
+  const q1 = await db.collection('messages')
+    .where('from_user_id', '==', userA)
+    .where('to_user_id', '==', userB)
+    .get();
+    
+  const q2 = await db.collection('messages')
+    .where('from_user_id', '==', userB)
+    .where('to_user_id', '==', userA)
+    .get();
+    
+  const messages = [];
+  const userCache = {};
+
+  const processDocs = async (docs) => {
+    for (const doc of docs) {
+      const data = doc.data();
+      
+      if (!userCache[data.from_user_id]) {
+        const u = await db.collection('users').doc(data.from_user_id).get();
+        userCache[data.from_user_id] = u.exists ? u.data().username : 'Unknown';
+      }
+      if (!userCache[data.to_user_id]) {
+        const u = await db.collection('users').doc(data.to_user_id).get();
+        userCache[data.to_user_id] = u.exists ? u.data().username : 'Unknown';
+      }
+
+      messages.push({
+        id: doc.id,
+        ...data,
+        from_username: userCache[data.from_user_id],
+        to_username: userCache[data.to_user_id]
+      });
+    }
+  };
+
+  await processDocs(q1.docs);
+  await processDocs(q2.docs);
+
+  return messages.sort((a, b) => a.created_at - b.created_at);
 }

@@ -6,12 +6,12 @@ import { fileURLToPath } from 'url';
 import http from 'http';
 import { Server as SocketIO } from 'socket.io';
 import dotenv from 'dotenv';
-import authRoutes from './routes/auth.js';
-import productRoutes from './routes/product.js';
-import chatRoutes from './routes/chat.js';
-import ratingRoutes from './routes/rating.js';
-import reportRoutes from './routes/report.js';
-import pool from './models/db.js';
+import authRoutes from '../server/routes/auth.js';
+import productRoutes from '../server/routes/product.js';
+import chatRoutes from '../server/routes/chat.js';
+import ratingRoutes from '../server/routes/rating.js';
+import reportRoutes from '../server/routes/report.js';
+import pool from '../server/models/db.js';
 
 dotenv.config();
 
@@ -20,22 +20,6 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const server = http.createServer(app);
-
-// Accept CORS from common Live Server origins and Vercel
-const allowedOrigins = [
-  'http://127.0.0.1:5500',
-  'http://localhost:5500',
-  'http://127.0.0.1:5501',
-  'http://localhost:5501',
-  'http://localhost:3000'
-];
-
-const io = new SocketIO(server, { 
-  cors: { 
-    origin: '*', 
-    methods: ['GET','POST'] 
-  } 
-});
 
 app.locals.db = pool;
 
@@ -48,7 +32,7 @@ app.use(session({
   secret: 'cput-secret', 
   resave: false, 
   saveUninitialized: true,
-  cookie: { secure: false } // Set to true if using HTTPS
+  cookie: { secure: false }
 }));
 
 // Seed Categories if empty
@@ -74,52 +58,23 @@ async function seedCategories() {
     console.error('[ERROR] Failed to seed categories:', err.message);
   }
 }
-seedCategories();
+// seedCategories(); // REMOVED FROM AUTO-START
 
-// Auth and feature routes
+app.get('/health', async (req, res) => {
+  await seedCategories();
+  res.json({ status: 'ok', time: new Date().toISOString(), env: !!process.env.FIREBASE_SERVICE_ACCOUNT });
+});
+
+// Routes
 app.use('/', authRoutes);
 app.use('/', productRoutes);
 app.use('/', chatRoutes);
 app.use('/', ratingRoutes);
 app.use('/', reportRoutes);
 
-// Placeholder routes
 app.get('/', (req, res) => {
   res.redirect('/login/login.html');
 });
 
-// Product submission page
-app.get('/submit-product', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'product.html'));
-});
-
-// Notifications page
-app.get('/notifications', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'notifications.html'));
-});
-
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', time: new Date().toISOString() });
-});
-
-// Socket.IO for real-time chat
-io.on('connection', (socket) => {
-  socket.on('joinRoom', ({ userA, userB }) => {
-    const room = [userA, userB].sort().join('-');
-    socket.join(room);
-  });
-  socket.on('chatMessage', ({ fromUserId, toUserId, content }) => {
-    const room = [fromUserId, toUserId].sort().join('-');
-    io.to(room).emit('chatMessage', { fromUserId, toUserId, content });
-  });
-});
-
-const PORT = process.env.PORT || 3000;
-if (process.env.NODE_ENV !== 'production') {
-  server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-}
-
+// For Vercel, we export the app
 export default app;
-

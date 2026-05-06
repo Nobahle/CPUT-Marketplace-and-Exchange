@@ -16,12 +16,26 @@ router.get('/signup', (req, res) => {
 
 // Handle login
 router.post('/login', async (req, res) => {
+  const start = Date.now();
   const { username, password } = req.body;
+  
+  console.log(`[AUTH] Login attempt for user: ${username}`);
+  
+  const userStart = Date.now();
   const user = await findUserByUsername(username);
+  console.log(`[AUTH] DB lookup took: ${Date.now() - userStart}ms`);
+  
   if (!user) return res.send('Invalid username or password');
+  
+  const bcryptStart = Date.now();
   const match = await bcrypt.compare(password, user.password);
+  console.log(`[AUTH] Bcrypt comparison took: ${Date.now() - bcryptStart}ms`);
+  
   if (!match) return res.send('Invalid username or password');
+  
   req.session.user = { id: user.id, username: user.username };
+  console.log(`[AUTH] Total login process took: ${Date.now() - start}ms`);
+  
   res.redirect('/home/home.html');
 });
 
@@ -53,10 +67,9 @@ router.get('/api/me', (req, res) => {
   res.json(req.session.user);
 });
 
-// API: list users for chat
 router.get('/api/users', async (req, res) => {
-  // Return a list of users (id, username)
-  const rows = await (await import('../models/db.js')).default.query('SELECT id, username FROM users').then(r=>r[0]);
+  const snapshot = await (await import('../models/db.js')).default.firestore.collection('users').get();
+  const rows = snapshot.docs.map(doc => ({ id: doc.id, username: doc.data().username }));
   res.json(rows);
 });
 

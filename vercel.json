@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/img/(.*)", "destination": "/img/$1" },
+    { "source": "/js/(.*)", "destination": "/js/$1" },
+    { "source": "/home/(.*)", "destination": "/home/$1" },
+    { "source": "/login/(.*)", "destination": "/login/$1" },
+    { "source": "/sign-in/(.*)", "destination": "/sign-in/$1" },
+    { "source": "/(.*)", "destination": "/api/index.js" }
+  ]
+}

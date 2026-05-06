@@ -73,13 +73,13 @@ router.get('/products/:id', async (req, res) => {
 
 // User submits a new product
 router.post('/products', requireLogin, upload.single('image'), async (req, res) => {
-  const { name, price, categoryId } = req.body;
+  const { name, price, categoryId, description } = req.body;
   let imagePath = '';
   if (req.file) {
     // expose path relative to served static root
     imagePath = `/img/uploads/${req.file.filename}`;
   }
-  if (!name || !price || !imagePath || !categoryId) return res.status(400).send('All fields required');
+  if (!name || !price || !imagePath || !categoryId || !description) return res.status(400).send('All fields required');
 
   // Sanitize price: remove currency symbols/commas and parse to float
   const cleaned = String(price).replace(/[^0-9.\-]/g, '');
@@ -87,7 +87,14 @@ router.post('/products', requireLogin, upload.single('image'), async (req, res) 
   if (Number.isNaN(numericPrice)) return res.status(400).send('Invalid price');
 
   try {
-    await createProduct({ name, price: numericPrice, image: imagePath, userId: req.session.user.id, categoryId });
+    await createProduct({ 
+      name, 
+      price: numericPrice, 
+      image: imagePath, 
+      userId: req.session.user.id, 
+      categoryId,
+      description 
+    });
     
     res.send('Product posted');
   } catch (err) {

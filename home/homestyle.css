@@ -285,125 +285,164 @@ header {
     display: inline-block;
 }
 
-/* Product Modal Styles */
+/* Enhanced Modal Styling */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     display: none;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    backdrop-filter: blur(5px);
 }
 
 .modal-content {
     background: white;
-    border-radius: 12px;
-    padding: 24px;
-    max-width: 500px;
     width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
+    max-width: 900px;
+    max-height: 90vh;
+    border-radius: 20px;
     position: relative;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    overflow-y: auto;
+    padding: 30px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
 .modal-close {
     position: absolute;
-    top: 12px;
-    right: 16px;
+    top: 20px;
+    right: 20px;
+    font-size: 30px;
     background: none;
     border: none;
-    font-size: 24px;
     cursor: pointer;
     color: #666;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    z-index: 10;
 }
 
-.modal-close:hover {
-    color: #333;
+.modal-product-details {
+    display: flex;
+    gap: 30px;
+}
+
+.modal-image-wrapper {
+    flex: 1;
+    min-width: 300px;
 }
 
 .modal-product-image {
     width: 100%;
-    max-height: 250px;
+    height: 400px;
     object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 16px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.modal-info-wrapper {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-product-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 8px;
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-weight: 700;
 }
 
 .modal-product-price {
-    font-size: 1.3rem;
+    font-size: 1.8rem;
+    color: #2ecc71;
     font-weight: 700;
-    color: #e74c3c;
+    margin-bottom: 20px;
+}
+
+.modal-product-category, .modal-product-seller {
+    font-size: 1.1rem;
+    color: #7f8c8d;
     margin-bottom: 8px;
 }
 
-.modal-product-category {
-    background: #f5f5f5;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    color: #666;
-    display: inline-block;
-    margin-bottom: 12px;
+.modal-product-category span, .modal-product-seller span {
+    font-weight: 600;
+    color: #34495e;
 }
 
-.modal-product-seller {
-    font-size: 1rem;
+.modal-product-description {
+    margin: 25px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border-left: 4px solid #3498db;
+}
+
+.modal-product-description h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.modal-product-description p {
+    line-height: 1.6;
     color: #555;
-    margin-bottom: 16px;
+    white-space: pre-wrap;
 }
 
 .modal-actions {
     display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: auto;
 }
 
 .modal-btn {
-    padding: 12px 20px;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 500;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
-    flex: 1;
-    min-width: 140px;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 1rem;
 }
 
 .modal-btn-primary {
     background: #3498db;
     color: white;
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-btn-primary:hover {
     background: #2980b9;
+    transform: translateY(-2px);
 }
 
 .modal-btn-secondary {
-    background: #95a5a6;
-    color: white;
+    background: #ecf0f1;
+    color: #7f8c8d;
+    flex: 1;
 }
 
 .modal-btn-secondary:hover {
-    background: #7f8c8d;
+    background: #bdc3c7;
+}
+
+@media (max-width: 768px) {
+    .modal-product-details {
+        flex-direction: column;
+    }
+    .modal-image-wrapper {
+        min-width: unset;
+    }
+    .modal-product-image {
+        height: 250px;
+    }
 }
 
 /* Footer Styles */
