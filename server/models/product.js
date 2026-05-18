@@ -86,16 +86,38 @@ export async function getApprovedProducts(limitNum = null, offsetNum = 0) {
 async function enrichProducts(docs) {
   return Promise.all(docs.map(async (doc) => {
     const data = doc.data();
-    const [userDoc, categoryDoc] = await Promise.all([
-      db.collection('users').doc(data.user_id).get(),
-      db.collection('categories').doc(data.category_id).get()
-    ]);
+    
+    let sellerUsername = 'Unknown';
+    let categoryName = 'Uncategorized';
+    
+    try {
+      if (data.user_id && typeof data.user_id === 'string' && data.user_id.trim() !== '') {
+        const userDoc = await db.collection('users').doc(data.user_id).get();
+        if (userDoc.exists) {
+          sellerUsername = userDoc.data().username || 'Unknown';
+        }
+      }
+    } catch (e) {
+      console.warn('[FIRESTORE WARNING] Failed to enrich seller:', e.message);
+    }
+    
+    try {
+      if (data.category_id && typeof data.category_id === 'string' && data.category_id.trim() !== '') {
+        const categoryDoc = await db.collection('categories').doc(data.category_id).get();
+        if (categoryDoc.exists) {
+          categoryName = categoryDoc.data().name || 'Uncategorized';
+        }
+      }
+    } catch (e) {
+      console.warn('[FIRESTORE WARNING] Failed to enrich category:', e.message);
+    }
+    
     return {
       id: doc.id,
       ...data,
-      seller_id: data.user_id,
-      seller_username: userDoc.exists ? userDoc.data().username : 'Unknown',
-      category_name: categoryDoc.exists ? categoryDoc.data().name : 'Uncategorized'
+      seller_id: data.user_id || '',
+      seller_username: sellerUsername,
+      category_name: categoryName
     };
   }));
 }
@@ -122,15 +144,37 @@ export async function getProductById(id) {
     if (!doc.exists) return null;
     const data = doc.data();
     
-    const userDoc = await db.collection('users').doc(data.user_id).get();
-    const categoryDoc = await db.collection('categories').doc(data.category_id).get();
+    let sellerUsername = 'Unknown';
+    let categoryName = 'Uncategorized';
+    
+    try {
+      if (data.user_id && typeof data.user_id === 'string' && data.user_id.trim() !== '') {
+        const userDoc = await db.collection('users').doc(data.user_id).get();
+        if (userDoc.exists) {
+          sellerUsername = userDoc.data().username || 'Unknown';
+        }
+      }
+    } catch (e) {
+      console.warn('[FIRESTORE WARNING] Failed to enrich seller:', e.message);
+    }
+    
+    try {
+      if (data.category_id && typeof data.category_id === 'string' && data.category_id.trim() !== '') {
+        const categoryDoc = await db.collection('categories').doc(data.category_id).get();
+        if (categoryDoc.exists) {
+          categoryName = categoryDoc.data().name || 'Uncategorized';
+        }
+      }
+    } catch (e) {
+      console.warn('[FIRESTORE WARNING] Failed to enrich category:', e.message);
+    }
     
     return {
       id: doc.id,
       ...data,
-      seller_id: data.user_id,
-      seller_username: userDoc.exists ? userDoc.data().username : 'Unknown',
-      category_name: categoryDoc.exists ? categoryDoc.data().name : 'Uncategorized'
+      seller_id: data.user_id || '',
+      seller_username: sellerUsername,
+      category_name: categoryName
     };
   } catch (err) {
     console.warn('[FIRESTORE WARNING] Falling back to SQLite for getProductById:', err.message);
@@ -180,14 +224,37 @@ export async function searchProducts(q, categoryId, limitNum = null, offsetNum =
     for (const doc of sortedDocs) {
       const data = doc.data();
       if (q && !data.name.toLowerCase().includes(q.toLowerCase())) continue;
-      const userDoc = await db.collection('users').doc(data.user_id).get();
-      const categoryDoc = await db.collection('categories').doc(data.category_id).get();
+      let sellerUsername = 'Unknown';
+      let categoryName = 'Uncategorized';
+      
+      try {
+        if (data.user_id && typeof data.user_id === 'string' && data.user_id.trim() !== '') {
+          const userDoc = await db.collection('users').doc(data.user_id).get();
+          if (userDoc.exists) {
+            sellerUsername = userDoc.data().username || 'Unknown';
+          }
+        }
+      } catch (e) {
+        console.warn('[FIRESTORE WARNING] Failed to enrich seller:', e.message);
+      }
+      
+      try {
+        if (data.category_id && typeof data.category_id === 'string' && data.category_id.trim() !== '') {
+          const categoryDoc = await db.collection('categories').doc(data.category_id).get();
+          if (categoryDoc.exists) {
+            categoryName = categoryDoc.data().name || 'Uncategorized';
+          }
+        }
+      } catch (e) {
+        console.warn('[FIRESTORE WARNING] Failed to enrich category:', e.message);
+      }
+      
       products.push({
         id: doc.id,
         ...data,
-        seller_id: data.user_id,
-        seller_username: userDoc.exists ? userDoc.data().username : 'Unknown',
-        category_name: categoryDoc.exists ? categoryDoc.data().name : 'Uncategorized'
+        seller_id: data.user_id || '',
+        seller_username: sellerUsername,
+        category_name: categoryName
       });
     }
     if (limitNum) {
