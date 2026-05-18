@@ -28,13 +28,22 @@ async function renderProducts(products) {
                 <div class="product-name">${product.name}</div>
                 <div class="product-category">${product.category_name || 'Uncategorized'}</div>
                 <div class="product-seller">Seller: ${product.seller_username}</div>
+                <div class="product-actions">
+                    <a href="../chat/chat.html?to=${product.seller_id}" class="chat-now-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        Chat with Seller
+                    </a>
+                </div>
             </div>
         `;
     });
     
     // Add click handlers for product cards
     document.querySelectorAll('.product-card').forEach(card => {
-        card.addEventListener('click', function() {
+        card.addEventListener('click', function(e) {
+            if (e.target.closest('.product-actions') || e.target.closest('a')) {
+                return;
+            }
             const productId = this.dataset.productId;
             showProductModal(productId);
         });

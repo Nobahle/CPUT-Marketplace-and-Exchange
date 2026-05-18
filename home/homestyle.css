@@ -727,3 +727,45 @@ footer {
         font-size: 0.9em;
     }
 }
+
+/* Premium Product Chat Button Styling */
+.product-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.chat-now-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 14px;
+    background: #e3f2fd;
+    color: #1976d2;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px dashed #90caf9;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chat-now-btn:hover {
+    background: #1976d2;
+    color: #FFFFFF !important;
+    border-style: solid;
+    border-color: #1976d2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+}
+
+.chat-now-btn svg {
+    transition: transform 0.2s ease;
+}
+
+.chat-now-btn:hover svg {
+    transform: scale(1.1) rotate(-5deg);
+}
