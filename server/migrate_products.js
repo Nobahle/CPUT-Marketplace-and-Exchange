@@ -14,10 +14,11 @@ export async function runMigration() {
   let nobahleId = null;
   const userSnapshot = await db.collection('users').where('username', '==', 'Nobahle').limit(1).get();
   
+  const hash = await bcrypt.hash('Nobahle123', 10);
+
   if (userSnapshot.empty) {
     console.log('[MIGRATION] User "Nobahle" not found. Creating user...');
-    // Create Nobahle with a secure hash of a default password
-    const hash = await bcrypt.hash('Nobahle@CPUT', 10);
+    // Create Nobahle with password Nobahle123
     const userRef = await db.collection('users').add({
       username: 'Nobahle',
       password: hash,
@@ -28,7 +29,12 @@ export async function runMigration() {
     console.log(`[MIGRATION] User "Nobahle" successfully created with ID: ${nobahleId}`);
   } else {
     nobahleId = userSnapshot.docs[0].id;
-    console.log(`[MIGRATION] Found existing user "Nobahle" with ID: ${nobahleId}`);
+    console.log(`[MIGRATION] Found existing user "Nobahle" with ID: ${nobahleId}. Guaranteeing password is set to Nobahle123...`);
+    
+    // Update password in Firestore to ensure it is always Nobahle123
+    await db.collection('users').doc(nobahleId).update({
+      password: hash
+    });
   }
 
   // 2. Fetch or seed Categories to map product categories
