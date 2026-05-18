@@ -13,8 +13,6 @@ import ratingRoutes from './routes/rating.js';
 import reportRoutes from './routes/report.js';
 import pool from './models/db.js';
 
-import { seedSqliteDbIfEmpty } from './models/sqlite_helper.js';
-
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -77,7 +75,15 @@ async function seedCategories() {
   }
 }
 seedCategories();
-seedSqliteDbIfEmpty();
+
+// Seed SQLite dynamically in offline/local environments (avoiding loading sqlite3 module on Vercel)
+if (!process.env.VERCEL) {
+  import('./models/sqlite_helper.js').then(({ seedSqliteDbIfEmpty }) => {
+    seedSqliteDbIfEmpty();
+  }).catch(err => {
+    console.warn('[SQLITE WARNING] Could not run offline seeding:', err.message);
+  });
+}
 
 // Auth and feature routes
 app.use('/', authRoutes);
@@ -125,4 +131,3 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export default app;
-

@@ -1,7 +1,11 @@
 import pool from './db.js';
-import { getSqliteDb } from './sqlite_helper.js';
 
 const db = pool.firestore;
+
+async function getSqliteDb() {
+  const { getSqliteDb: getDb } = await import('./sqlite_helper.js');
+  return getDb();
+}
 
 export async function createProduct({ name, price, image, userId, categoryId, description }) {
   try {
