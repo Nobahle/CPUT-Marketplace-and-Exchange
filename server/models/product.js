@@ -37,10 +37,16 @@ export async function createProduct({ name, price, image, userId, categoryId, de
 
 export async function getApprovedProducts(limitNum = null, offsetNum = 0) {
   try {
-    let query = db.collection('products').where('approved', '==', 1).orderBy('created_at', 'desc');
-    if (limitNum) query = query.limit(limitNum);
+    let query = db.collection('products').where('approved', '==', 1);
     const snapshot = await query.get();
-    return await enrichProducts(snapshot.docs);
+    const sortedDocs = snapshot.docs.sort((a, b) => {
+      const tA = a.data().created_at?.toDate ? a.data().created_at.toDate() : new Date(a.data().created_at);
+      const tB = b.data().created_at?.toDate ? b.data().created_at.toDate() : new Date(b.data().created_at);
+      return tB - tA;
+    });
+    const offsetDocs = sortedDocs.slice(offsetNum);
+    const limitDocs = limitNum ? offsetDocs.slice(0, limitNum) : offsetDocs;
+    return await enrichProducts(limitDocs);
   } catch (err) {
     console.warn('[FIRESTORE WARNING] Falling back to SQLite for getApprovedProducts:', err.message);
     const sqlite = await getSqliteDb();
@@ -164,9 +170,14 @@ export async function searchProducts(q, categoryId, limitNum = null, offsetNum =
     if (categoryId) {
       query = query.where('category_id', '==', categoryId);
     }
-    const snapshot = await query.orderBy('created_at', 'desc').get();
+    const snapshot = await query.get();
+    const sortedDocs = snapshot.docs.sort((a, b) => {
+      const tA = a.data().created_at?.toDate ? a.data().created_at.toDate() : new Date(a.data().created_at);
+      const tB = b.data().created_at?.toDate ? b.data().created_at.toDate() : new Date(b.data().created_at);
+      return tB - tA;
+    });
     let products = [];
-    for (const doc of snapshot.docs) {
+    for (const doc of sortedDocs) {
       const data = doc.data();
       if (q && !data.name.toLowerCase().includes(q.toLowerCase())) continue;
       const userDoc = await db.collection('users').doc(data.user_id).get();
