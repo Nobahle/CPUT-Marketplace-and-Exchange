@@ -13,6 +13,8 @@ import ratingRoutes from './routes/rating.js';
 import reportRoutes from './routes/report.js';
 import pool from './models/db.js';
 
+import { seedSqliteDbIfEmpty } from './models/sqlite_helper.js';
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -75,6 +77,7 @@ async function seedCategories() {
   }
 }
 seedCategories();
+seedSqliteDbIfEmpty();
 
 // Auth and feature routes
 app.use('/', authRoutes);

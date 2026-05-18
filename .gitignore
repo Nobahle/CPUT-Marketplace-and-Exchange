@@ -1,1 +1,7 @@
 .vercel
+node_modules/
+server/node_modules/
+server/firebase-key.json
+server/db/cput.db
+.env
+.DS_Store

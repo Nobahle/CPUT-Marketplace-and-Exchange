@@ -164,7 +164,7 @@ globalThis.addEventListener('DOMContentLoaded', async () => {
     setTimeout(() => {
       const li = document.querySelector(`#user-list li[data-user-id="${to}"]`);
       const username = li ? li.querySelector('.chat-user-name').textContent : 'Seller';
-      selectUser(parseInt(to, 10), username);
+      selectUser(to, username);
     }, 200);
   }
   document.getElementById('send-btn').onclick = sendMessage;

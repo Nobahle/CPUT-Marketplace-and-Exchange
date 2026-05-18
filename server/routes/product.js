@@ -109,5 +109,16 @@ router.get('/categories', async (req, res) => {
   res.json(categories);
 });
 
+// Administrative route to restore all products and assign them to Nobahle
+router.all('/api/admin/migrate', async (req, res) => {
+  try {
+    const { runMigration } = await import('../migrate_products.js');
+    const result = await runMigration();
+    res.json({ success: true, message: 'Migration successfully completed', details: result });
+  } catch (err) {
+    console.error('[ADMIN MIGRATION ERROR]', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 
 export default router;
